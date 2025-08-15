@@ -1,0 +1,242 @@
+{% extends "base_generic.html" %}
+{% load static %}
+
+{% block content %}
+  <style>
+    /* CSS for Edit Task Page */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+
+      h2 {
+        color: #3c3a5d;
+        font-size: 28px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      /* Link Text for Task Detail Page */
+      .task-detail-link {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        font-size: 18px;
+        color: #5e548e;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      .task-detail-link:hover {
+        text-decoration: underline;
+        color: #443c68;
+      }
+
+      .form-container {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        width: 100%;
+        max-width: 750px;
+        margin: 30px auto;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #3c3a5d;
+        display: block;
+      }
+
+      input, select, textarea {
+        width: 100%;
+        padding: 12px 15px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      input:focus, select:focus, textarea:focus {
+        border-color: #5e548e;
+        box-shadow: 0 0 8px rgba(94, 84, 142, 0.2);
+        outline: none;
+      }
+
+      button {
+        background-color: #5e548e;
+        color: white;
+        padding: 14px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        display: inline-block;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+      }
+
+      button:hover {
+        background-color: #443c68;
+        transform: translateY(-2px);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      /* Adjustments for Recurrence Fields */
+      .recurrence-fields {
+        display: none;
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f4f4f9;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .form-container {
+          padding: 20px;
+          max-width: 100%;
+        }
+
+        button {
+          width: 100%;
+          font-size: 14px;
+        }
+      }
+
+
+  </style>
+
+  <!-- Task Detail Link -->
+  <a href="{% url 'task_detail' task.task_id %}" class="task-detail-link">← Back to Task Details</a>
+
+  <h2>Edit Task: {{ task.task_id }}</h2>
+
+  <div class="form-container">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <!-- Task ID (readonly) -->
+      <div class="form-group">
+        <label for="id_task_id">Task ID:</label>
+        <input type="text" id="id_task_id" name="task_id" value="{{ task.task_id }}" readonly>
+      </div>
+
+      <!-- Assigned To -->
+      <div class="form-group">
+        <label for="id_assigned_to">Assigned To:</label>
+        {{ form.assigned_to }}
+      </div>
+
+      <!-- Deadline -->
+      <div class="form-group">
+        <label for="id_deadline">Deadline:</label>
+        {{ form.deadline }}
+      </div>
+
+      <div class="form-group">
+        <label for="id_department">Department</label>
+        {{ form.department }}
+      </div>
+
+      <!-- Ticket Type -->
+      <div class="form-group">
+        <label for="id_ticket_type">Ticket Type:</label>
+        {{ form.ticket_type }}
+      </div>
+
+      <!-- Priority -->
+      <div class="form-group">
+        <label for="id_priority">Priority:</label>
+        {{ form.priority }}
+      </div>
+
+      <!-- Status -->
+      <div class="form-group">
+        <label for="id_status">Status:</label>
+        {{ form.status }}
+      </div>
+
+      <!-- Subject -->
+      <div class="form-group">
+        <label for="id_subject">Subject:</label>
+        {{ form.subject }}
+      </div>
+
+      <!-- Request Details -->
+      <div class="form-group">
+        <label for="id_request_details">Request Details:</label>
+        {{ form.request_details }}
+      </div>
+
+      <!-- Attach File -->
+      <div class="form-group">
+        <label for="id_attach_file">Attach File:</label>
+        {{ form.attach_file }}
+      </div>
+
+      <!-- Is Recurring -->
+      <div class="form-group">
+        <label for="id_is_recurring">Is Recurring:</label>
+        {{ form.is_recurring }}
+      </div>
+
+      <!-- Recurrence Type, Count, and Duration (Only show when Is Recurring is checked) -->
+      <div class="recurrence-fields">
+        <div class="form-group">
+          <label for="id_recurrence_type">Recurrence Type:</label>
+          {{ form.recurrence_type|default_if_none:"Select Recurrence Type" }}
+        </div>
+      
+        <div class="form-group">
+          <label for="id_recurrence_count">Recurrence Count:</label>
+          {{ form.recurrence_count|default_if_none:"0" }}
+        </div>
+      
+        <div class="form-group">
+          <label for="id_recurrence_duration">Recurrence Duration:</label>
+          {{ form.recurrence_duration|default_if_none:"0" }}
+        </div>
+      </div>
+
+      <button type="submit">Save Changes</button>
+    </form>
+  </div>
+
+  <script>
+    // JavaScript to toggle recurrence fields visibility based on "Is Recurring" checkbox
+    const isRecurringCheckbox = document.getElementById("id_is_recurring");
+    const recurrenceFields = document.querySelector(".recurrence-fields");
+
+    // Initial check to hide or show recurrence fields based on the initial value of "is_recurring"
+    if (isRecurringCheckbox.checked) {
+      recurrenceFields.style.display = "block";
+    } else {
+      recurrenceFields.style.display = "none";
+    }
+
+    // Toggle recurrence fields visibility when "Is Recurring" checkbox is clicked
+    isRecurringCheckbox.addEventListener("change", function() {
+      if (isRecurringCheckbox.checked) {
+        recurrenceFields.style.display = "block";
+      } else {
+        recurrenceFields.style.display = "none";
+      }
+    });
+  </script>
+{% endblock %}

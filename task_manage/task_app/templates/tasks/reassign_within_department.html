@@ -1,0 +1,139 @@
+{% extends "base_generic.html" %}
+{% load static %}
+
+{% block content %}
+<div class="reassign-container">
+    <h2>Reassign Task Within Department</h2>
+    <p><strong>Task ID:</strong> {{ task.task_id }}</p>
+    <p><strong>Current Assignee:</strong> {{ task.assigned_to.get_full_name }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="assigned_to">Select New Assignee:</label>
+            <select name="assigned_to" id="assigned_to" class="form-control" required>
+                <option value="">-- Select Non-Management User --</option>
+                {% for user in non_management_users %}
+                <option value="{{ user.user.id }}">{{ user.user.get_full_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success">Reassign</button>
+        <a href="{% url 'task_detail' task.task_id %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+<style>
+.reassign-container {
+    max-width: 600px;
+    margin: 60px auto;
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    font-family: Arial, sans-serif;
+}
+
+.reassign-container h2 {
+    text-align: center;
+    color: #3c3a5d;
+    font-size: 28px;
+    margin-bottom: 25px;
+    font-weight: bold;
+}
+
+.reassign-container p {
+    font-size: 16px;
+    color: #333;
+    margin: 15px 0;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+label {
+    font-weight: bold;
+    font-size: 14px;
+    color: #3c3a5d;
+    margin-bottom: 10px;
+    display: block;
+}
+
+select {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+select:focus {
+    border-color: #5e548e;
+    box-shadow: 0 0 8px rgba(94, 84, 142, 0.3);
+}
+
+.btn {
+    display: inline-block;
+    padding: 14px 24px;
+    margin: 10px 5px;
+    text-decoration: none;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-success {
+    background-color: #5e548e;
+}
+
+.btn-secondary {
+    background-color: #443c68;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    opacity: 0.9;
+}
+
+.btn-success:hover {
+    background-color: #443c68;
+}
+
+.btn-secondary:hover {
+    background-color: #3a2e5a;
+}
+
+/* Spacing between elements and responsive design */
+.reassign-container p,
+.form-group,
+select,
+.btn {
+    margin-top: 15px;
+}
+
+@media (max-width: 768px) {
+    .reassign-container {
+        padding: 30px;
+        margin: 40px auto;
+    }
+
+    .btn {
+        width: 100%;
+        font-size: 15px;
+    }
+
+    .reassign-container h2 {
+        font-size: 24px;
+    }
+}
+
+</style>
+{% endblock %}

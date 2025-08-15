@@ -1,0 +1,159 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+
+{% block content %}
+  <style>
+    /* General Page Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    color: #3c3a5d;
+    font-size: 30px;
+    margin: 30px 0;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Task Note Container */
+.task-note-container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 700px;
+    margin: 40px auto;
+}
+
+/* Form Elements */
+label {
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: block;
+    color: #3c3a5d;
+    font-size: 14px;
+}
+
+textarea {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    resize: vertical;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+textarea:focus {
+    border-color: #5e548e;
+    box-shadow: 0 0 6px rgba(94, 84, 142, 0.3);
+    outline: none;
+}
+
+/* Buttons */
+button {
+    padding: 14px 20px;
+    background-color: #5e548e;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #443c68;
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Back Link */
+.task-detail-link {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 18px;
+    color: #5e548e;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.task-detail-link:hover {
+    text-decoration: underline;
+    color: #443c68;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .task-note-container {
+        padding: 20px;
+        margin: 30px auto;
+    }
+
+    button {
+        width: 100%;
+        font-size: 15px;
+    }
+
+    h2 {
+        font-size: 26px;
+    }
+
+    .task-detail-link {
+        font-size: 16px;
+    }
+}
+
+  </style>
+
+  <!-- Back to Task Detail Link -->
+  <a href="{% url 'task_detail' task.task_id %}" class="task-detail-link">← Back to Task Details</a>
+
+  <h2>Task Note for Task ID: {{ task.task_id }}</h2>
+  
+  <div class="task-note-container">
+    <!-- Task Note Update Form -->
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <!-- Note Textarea Field -->
+      <div class="form-group">
+        <label for="note">Add a Note:</label>
+        <textarea id="note" name="note" rows="4" placeholder="Enter your note here...">{{ task.notes }}</textarea>
+      </div>
+    
+      <!-- Attachment File Field -->
+      <div class="form-group">
+        <label for="attachment_by_assignee">Add Attachment by Assignee:</label>
+        <input type="file" id="attachment_by_assignee" name="attachment_by_assignee" />
+      </div>
+    
+      <!-- Save Note and Reassign Button -->
+      <button type="submit">Save Note And Reassign</button>
+    </form>
+
+    <!-- Reassign Task Button
+    <div class="reassign-btn-container">
+      <form method="post" action="{% url 'reassign_task' task.task_id %}">
+        {% csrf_token %}
+        <button type="submit">Reassign to Creator</button>
+      </form>
+    </div> -->
+
+   
+  </div>
+{% endblock %}

@@ -1,0 +1,174 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<div class="profile-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Task Management System</h2>
+        <ul>
+            {% with request.user.userprofile as profile %}
+                {% if profile.category == 'Task Management System Manager' %}
+                    <li><a href="{% url 'activity' %}" class="{% if request.resolver_match.url_name == 'activity' %}active{% endif %}"><span class="material-icons">analytics</span> Activity</a></li>
+                    <li><a href="{% url 'metrics' %}" class="{% if request.resolver_match.url_name == 'metrics' %}active{% endif %}"><span class="material-icons">bar_chart</span> Metrics</a></li>
+                    <li><a href="{% url 'user_profile' %}" class="{% if request.resolver_match.url_name == 'user_profile' %}active{% endif %}"><span class="material-icons">person</span> User Profile</a></li>
+                {% else %}
+                    {% if profile.category == "Departmental Manager" %}
+                        <li><a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}"><span class="material-icons">home</span> Home</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'assigned_to_me' %}" class="{% if request.resolver_match.url_name == 'assigned_to_me' %}active{% endif %}"><span class="material-icons">assignment</span> Assigned To Me</a></li>
+                    <li><a href="{% url 'assigned_by_me' %}" class="{% if request.resolver_match.url_name == 'assigned_by_me' %}active{% endif %}"><span class="material-icons">assignment_ind</span> Assigned By Me</a></li>
+                    <li><a href="{% url 'user_profile' %}" class="{% if request.resolver_match.url_name == 'user_profile' %}active{% endif %}"><span class="material-icons">person</span> User Profile</a></li>
+                {% endif %}
+            {% endwith %}
+        </ul>
+        <div class="logout">
+            <a href="{% url 'logout' %}"><span class="material-icons">logout</span> Logout</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="profile-content">
+        <h1>Welcome, {{ request.user.first_name }}!</h1>
+        <div class="profile-details">
+            <div class="profile-item">
+                <img src="https://www.svgrepo.com/show/535711/user.svg" alt="User Icon" class="icon">
+                <p><strong>{{ request.user.get_full_name }}</strong></p>
+            </div>
+            <div class="profile-item">
+                <img src="https://www.svgrepo.com/show/522171/mail.svg" alt="Email Icon" class="icon">
+                <p>{{ request.user.email }}</p>
+            </div>
+            <div class="profile-item">
+                <img src="https://www.svgrepo.com/show/500882/group.svg" alt="Role Icon" class="icon">
+                <p>{{ user_profile.category }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Inline CSS for User Profile Page -->
+<style>
+    .profile-container {
+        display: flex;
+        font-family: Arial, sans-serif;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+    }
+
+    /* Sidebar Styling */
+    .sidebar {
+        background-color: #3c3a5d;
+        color: #fff;
+        width: 180px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border-radius: 20px;
+        margin: 0px;
+    }
+
+    .sidebar h2 {
+        font-size: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+        color: #d1c4e9;
+    }
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar ul li {
+        margin: 10px 0;
+    }
+
+    .sidebar ul li a {
+        text-decoration: none;
+        color: #d1c4e9;
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-radius: 19px;
+    }
+
+    .sidebar ul li a.active,
+    .sidebar ul li a:hover {
+        background-color: #5e548e;
+    }
+
+    .logout a {
+        color: #d1c4e9;
+        text-decoration: none;
+        text-align: center;
+        display: block;
+        padding: 10px;
+        margin-top: 20px;
+        background-color: #5e548e;
+        border-radius: 4px;
+    }
+
+    /* Main Profile Content Styling */
+    .profile-content {
+        flex: 1;
+        padding: 40px;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .profile-content h1 {
+        font-size: 26px;
+        color: #3c3a5d;
+        margin-bottom: 20px;
+    }
+
+    .profile-details {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        background-color: #f9f9f9;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 450px;
+    }
+
+    .profile-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 16px;
+        color: #333;
+    }
+
+    .profile-item p {
+        margin: 0;
+        font-size: 16px;
+        font-weight: bold;
+        color: #3c3a5d;
+    }
+
+    .icon {
+        width: 40px;
+        height: 40px;
+        background-color: #eceff4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+        border-radius: 8px;
+    }
+</style>
+
+{% endblock %}

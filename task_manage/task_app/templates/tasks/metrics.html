@@ -1,0 +1,114 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+
+{% block content %}
+<div class="task-manager-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Task Management System</h2>
+        <ul>
+            {% with request.user.userprofile as profile %}
+                {% if profile.category == 'Task Management System Manager' %}
+                    <li><a href="{% url 'activity' %}">Activity</a></li>
+                    <li><a href="{% url 'metrics' %}" class="active">Metrics</a></li>
+                    <li><a href="{% url 'user_profile' %}">User Profile</a></li>
+                {% endif %}
+            {% endwith %}
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Metrics</h1>
+            <p>Overview of tickets raised and received by department, including last 24 hours and all-time data.</p>
+        </div>
+
+        <!-- Combined Metrics Table -->
+        <div class="metrics-table">
+            <h3>Ticket Metrics Overview</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Department</th>
+                        <th>Open Tickets Raised</th>
+                        <th>Open Tickets Received</th>
+                        <th>Tickets Raised in Last 24 Hours</th>
+                        <th>Tickets Received in Last 24 Hours</th>
+                        <th>Older Open Tickets</th>
+                        <th>Pending Tickets (Bifurcation by Department)</th>
+                        <th>Tickets Passed 72 Hours After Raising</th> <!-- New Column -->
+                        <th>Tickets Passed the Revised Deadline</th> <!-- New Column -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for department in metrics_data %}
+                    <tr>
+                        <td>{{ department.department__name }}</td>
+                        <td>{{ department.open_tickets_raised }}</td>
+                        <td>{{ department.open_tickets_received }}</td>
+                        <td>{{ department.tickets_raised_last_24hr }}</td>
+                        <td>{{ department.tickets_received_last_24hr }}</td>
+                        <td>{{ department.older_open_tickets }}</td>
+                        <td>
+                            <ul class="pending-list">
+                                {% for dept_name, count in department.pending_tickets_bifurcation.items %}
+                                    <li>{{ dept_name }}: {{ count }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>{{ department.tickets_passed_72_hours }}</td> <!-- New Column Data -->
+                        <td>{{ department.tickets_passed_revised_deadline }}</td> <!-- New Column Data -->
+                    </tr>
+                    {% endfor %}
+                    <!-- Total Row for 24 Hours -->
+                    <tr class="total-row">
+                        <td><strong>Total</strong></td>
+                        <td>{{ metrics_summary.total_open_raised }}</td>
+                        <td>{{ metrics_summary.total_open_received }}</td>
+                        <td>{{ metrics_summary.total_raised_last_24hr }}</td>
+                        <td>{{ metrics_summary.total_received_last_24hr }}</td>
+                        <td>{{ metrics_summary.total_older_open_tickets }}</td>
+                        <td></td>
+                        <td>{{ metrics_summary.total_tickets_passed_72_hours }}</td> <!-- Total Passed 72 Hours -->
+                        <td>{{ metrics_summary.total_tickets_passed_revised_deadline }}</td> <!-- Total Passed Revised Deadline -->
+                    </tr>
+                </tbody>
+                
+            </table>
+        </div>
+
+        <button class="download-btn" onclick="window.location.href='{% url 'download_metrics' %}'">Download Metrics</button>
+    </div>
+</div>
+
+<!-- Inline CSS for styling -->
+<style>
+    .task-manager-container { display: flex; height: 100vh; font-family: Arial, sans-serif; }
+    .sidebar { background-color: #f4f4f9; color: #333; width: 250px; padding: 20px; text-align: center; }
+    .sidebar h2 { font-size: 22px; color: #4CAF50; }
+    .sidebar ul { list-style: none; padding: 0; }
+    .sidebar ul li { margin: 15px 0; }
+    .sidebar ul li a { text-decoration: none; color: #333; font-size: 18px; display: block; padding: 10px; border-radius: 8px; }
+    .sidebar ul li a.active, .sidebar ul li a:hover { background-color: #4CAF50; color: #fff; }
+    .main-content { flex: 1; padding: 20px; }
+    .header h1 { font-size: 24px; color: #333; }
+    .metrics-table { margin-top: 20px; }
+    .metrics-table table { width: 100%; border-collapse: collapse; }
+    .metrics-table th, .metrics-table td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+    .metrics-table th { background-color: #f4f4f9; color: #333; }
+    .metrics-table td { background-color: #fff; color: #333; }
+    .metrics-table tr:hover td { background-color: #E8F5E9; }
+    .metrics-table .total-row td { font-weight: bold; background-color: #f4f4f9; }
+    .download-btn { margin-top: 23px;padding: 8px 15px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+    .download-btn:hover { background-color: #388E3C; }
+    .pending-list {
+        list-style-type: none;
+        padding: 0;
+    }
+    .pending-list li {
+        margin-bottom: 5px;
+    }
+</style>
+
+{% endblock %}
